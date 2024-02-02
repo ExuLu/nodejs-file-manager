@@ -7,7 +7,7 @@ function exitFromFileManager() {
   process.exit();
 }
 function typeInfoAboutDirname() {
-  stdout.write(`You are currently in ${__dirname}`);
+  stdout.write(`You are currently in ${__dirname} \n`);
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,6 +29,6 @@ stdin.on('data', (data) => {
   if (stringData === '.exit') exitFromFileManager();
 
   typeInfoAboutDirname();
-  console.log(stringData);
+//   console.log(stringData);
 });
 process.on('SIGINT', exitFromFileManager);
