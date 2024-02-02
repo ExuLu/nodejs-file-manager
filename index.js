@@ -6,8 +6,8 @@ function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
   process.exit();
 }
-function typeInfoAboutDirname() {
-  stdout.write(`You are currently in ${__dirname} \n`);
+function typeInfoAboutDirname(dir) {
+  stdout.write(`You are currently in ${dir} \n`);
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,13 +22,15 @@ const username = args.reduce(
 );
 
 stdout.write(`Welcome to the File Manager, ${username} \n`);
-typeInfoAboutDirname();
+typeInfoAboutDirname(__dirname);
 
 stdin.on('data', (data) => {
   const stringData = data.toString().trim();
   if (stringData === '.exit') exitFromFileManager();
 
-  typeInfoAboutDirname();
-//   console.log(stringData);
+  const curFilename = fileURLToPath(import.meta.url);
+  const curDirname = dirname(curFilename);
+  typeInfoAboutDirname(curDirname);
+  //   console.log(stringData);
 });
 process.on('SIGINT', exitFromFileManager);
