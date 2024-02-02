@@ -1,3 +1,5 @@
+import { stdin, stdout } from 'process';
+
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -6,3 +8,7 @@ const username = args.reduce(
   ''
 );
 
+stdout.write(`Welcome to the File Manager, ${username} \n`);
+stdin.on('data', () => {
+    
+});
