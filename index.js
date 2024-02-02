@@ -6,10 +6,6 @@ function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
   process.exit();
 }
-function typeInfoAboutDirname(dir) {
-  stdout.write(`You are currently in ${dir} \n`);
-}
-
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -19,7 +15,7 @@ const username = args.reduce(
 );
 
 stdout.write(`Welcome to the File Manager, ${username} \n`);
-console.log(cwd());
+stdout.write(`You are currently in ${cwd()} \n`);
 
 stdin.on('data', (data) => {
   const stringData = data.toString().trim();
@@ -28,10 +24,11 @@ stdin.on('data', (data) => {
 
   if (stringData === 'up') {
     const upDirPath = cwd().slice(0, cwd().lastIndexOf('/'));
-    chdir(upDirPath);
-    console.log(cwd());
-
+    try {
+      chdir(upDirPath);
+    } catch (err) {}
+    stdout.write(`You are currently in ${cwd()} \n`);
   }
-
 });
+
 process.on('SIGINT', exitFromFileManager);
