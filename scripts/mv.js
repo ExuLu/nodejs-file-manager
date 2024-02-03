@@ -60,5 +60,9 @@ export default async function moveCommand(userArg) {
     }
   }
 
-  await rm(origFilePath);
+  try {
+    await rm(origFilePath);
+  } catch (err) {
+    addError();
+  }
 }
