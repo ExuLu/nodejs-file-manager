@@ -1,6 +1,13 @@
 import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
-import { readdir, stat, access, writeFile, rename } from 'fs/promises';
+import {
+  readdir,
+  stat,
+  access,
+  writeFile,
+  rename,
+  copyFile,
+} from 'fs/promises';
 import { createReadStream } from 'fs';
 import { error } from 'console';
 
@@ -150,16 +157,16 @@ async function copyCommand(stringData) {
     ? userArgArray[1]
     : join(cwd(), userArgArray[1]);
 
+
   try {
-    await access(origFilePath);
-  } catch (err) {
-    console.error('Invalid input');
+    await access(copyFilePath);
+    console.error('Operation failed');
     infoAboutCurDir();
     return;
-  }
+  } catch (err) {}
 
+    // const originalFile = createReadStream(origFilePath, 'utf-8');
 
-  
 
 }
 
