@@ -6,6 +6,10 @@ function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
   process.exit();
 }
+function infoAboutCurDir() {
+  stdout.write(`You are currently in ${cwd()} \n`);
+}
+
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -15,7 +19,7 @@ const username = args.reduce(
 );
 
 stdout.write(`Welcome to the File Manager, ${username} \n`);
-stdout.write(`You are currently in ${cwd()} \n`);
+infoAboutCurDir();
 
 stdin.on('data', (data) => {
   const stringData = data.toString().trim();
@@ -27,19 +31,20 @@ stdin.on('data', (data) => {
     try {
       chdir(upDirPath);
     } catch (err) {}
-    stdout.write(`You are currently in ${cwd()} \n`);
+    infoAboutCurDir();
   }
 
   if (stringData.includes('cd')) {
+    const userArg = stringData.slice(3);
+    if (userArg.trim() === '') console.error('Invalid input');
     const newDirPath = join(cwd(), stringData.slice(3));
-
     try {
       chdir(newDirPath);
     } catch (err) {
-      if (err.code === 'ENOENT') console.log('Operation failed');
+      if (err.code === 'ENOENT') console.error('Operation failed');
     }
 
-    console.error(`You are currently in ${cwd()} \n`);
+    infoAboutCurDir();
   }
 });
 
