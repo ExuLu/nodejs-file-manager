@@ -7,28 +7,42 @@ import upCommand from './scripts/up.js';
 import infoAboutCurDir from './scripts/textInfo.js';
 import exitFromFileManager from './scripts/exit.js';
 import lsCommand from './scripts/ls.js';
+import addError from './scripts/error.js';
 
-async function cdCommand(stringData) {
-  const userArg = stringData.slice(3);
-  if (userArg.trim() === '') console.error('Invalid input');
+const noArguments = 'You need to enter arguments after command';
+const notDir = 'You need enter path to a folder';
+const wrongPath = 'Such directory or file does not exist';
+
+async function cdCommand(userArg) {
+  if (userArg === '') {
+    addError('input', noArguments);
+    return;
+  }
   const newDirPath = userArg.includes('/Users')
     ? userArg
     : join(cwd(), userArg);
 
   try {
     const dirInfo = await stat(userArg);
-    if (dirInfo.isFile()) console.error('Invalid input');
+    if (dirInfo.isFile()) {
+      addError('input', notDir);
+      return;
+    }
     chdir(newDirPath);
+    infoAboutCurDir();
   } catch (err) {
-    if (err.code === 'ENOENT') console.error('Operation failed');
+    if (err.code === 'ENOENT') {
+      addError('operation', wrongPath);
+    }
   }
-
-  infoAboutCurDir();
 }
 
-function catCommand(stringData) {
-  const userArg = stringData.slice(3).trim();
-  if (userArg.trim() === '') console.error('Invalid input');
+function catCommand(userArg) {
+  if (userArg === '') {
+    console.error('Invalid input');
+    infoAboutCurDir();
+    return;
+  }
   const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
   const readStream = createReadStream(filePath, 'utf-8');
   let data = '';
@@ -44,9 +58,7 @@ function catCommand(stringData) {
   });
 }
 
-async function addCommand(stringData) {
-  const userArg = stringData.slice(3).trim();
-
+async function addCommand(userArg) {
   if (userArg.trim() === '') console.error('Invalid input');
   const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
 
@@ -63,8 +75,7 @@ async function addCommand(stringData) {
   infoAboutCurDir();
 }
 
-async function renameCommand(stringData) {
-  const userArg = stringData.slice(3).trim();
+async function renameCommand(userArg) {
   const userArgArray = userArg.split(' ');
 
   if (userArg.trim() === '' || !userArg.includes(' ')) {
@@ -102,8 +113,7 @@ async function renameCommand(stringData) {
   infoAboutCurDir();
 }
 
-async function copyCommand(stringData) {
-  const userArg = stringData.slice(3).trim();
+async function copyCommand(userArg) {
   const userArgArray = userArg.split(' ');
 
   if (userArg.trim() === '' || !userArg.includes(' ')) {
@@ -146,9 +156,7 @@ async function copyCommand(stringData) {
   }
 }
 
-async function removeCommand(stringData) {
-  const userArg = stringData.slice(3).trim();
-
+async function removeCommand(userArg) {
   if (userArg.trim() === '') console.error('Invalid input');
   const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
 
@@ -161,8 +169,7 @@ async function removeCommand(stringData) {
   infoAboutCurDir();
 }
 
-async function moveCommand(stringData) {
-  const userArg = stringData.slice(3).trim();
+async function moveCommand(userArg) {
   const userArgArray = userArg.split(' ');
 
   if (userArg.trim() === '' || !userArg.includes(' ')) {
@@ -237,21 +244,42 @@ stdin.on('data', async (data) => {
 
   if (stringData === 'up') upCommand();
 
-  if (stringData.includes('cd ')) await cdCommand(stringData);
+  if (stringData.includes('cd')) {
+    const userArg = stringData.slice(3);
+    await cdCommand(userArg);
+  }
 
   if (stringData === 'ls') await lsCommand();
 
-  if (stringData.includes('cat')) catCommand(stringData);
+  if (stringData.includes('cat')) {
+    const userArg = stringData.slice(4);
+    catCommand(userArg);
+  }
 
-  if (stringData.includes('add')) await addCommand(stringData);
+  if (stringData.includes('add')) {
+    const userArg = stringData.slice(4);
+    await addCommand(userArg);
+  }
 
-  if (stringData.includes('rn')) await renameCommand(stringData);
+  if (stringData.includes('rn')) {
+    const userArg = stringData.slice(3);
+    await renameCommand(userArg);
+  }
 
-  if (stringData.includes('cp')) await copyCommand(stringData);
+  if (stringData.includes('cp')) {
+    const userArg = stringData.slice(3);
+    await copyCommand(userArg);
+  }
 
-  if (stringData.includes('rm')) await removeCommand(stringData);
+  if (stringData.includes('rm')) {
+    const userArg = stringData.slice(3);
+    await removeCommand(userArg);
+  }
 
-  if (stringData.includes('mv')) await moveCommand(stringData);
+  if (stringData.includes('mv')) {
+    const userArg = stringData.slice(3);
+    await moveCommand(userArg);
+  }
 });
 
 process.on('SIGINT', () => exitFromFileManager(username));
