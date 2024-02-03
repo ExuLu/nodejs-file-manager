@@ -8,8 +8,9 @@ import {
   rename,
   copyFile,
 } from 'fs/promises';
-import { createReadStream } from 'fs';
+import { createReadStream, createWriteStream } from 'fs';
 import { error } from 'console';
+import { pipeline } from 'stream/promises';
 
 function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
@@ -157,7 +158,6 @@ async function copyCommand(stringData) {
     ? userArgArray[1]
     : join(cwd(), userArgArray[1]);
 
-
   try {
     await access(copyFilePath);
     console.error('Operation failed');
@@ -165,9 +165,13 @@ async function copyCommand(stringData) {
     return;
   } catch (err) {}
 
-    // const originalFile = createReadStream(origFilePath, 'utf-8');
-
-
+  const originalFileStream = createReadStream(origFilePath, 'utf-8');
+  const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
+  try {
+    await pipeline(originalFileStream, copyFileStream);
+  } catch (err) {
+    console.log(err.code);
+  }
 }
 
 const args = process.argv.slice(2);
