@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
-import { readdir } from 'fs/promises';
+import { readdir, stat } from 'fs/promises';
 
 function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
@@ -34,6 +34,13 @@ function cdCommand(stringData) {
 async function lsCommand() {
   const subDirs = await readdir(cwd());
   console.log(subDirs);
+  subDirs.forEach(async (dir, index) => {
+    const info = await stat(join(cwd(), dir));
+    let dirOrFile = 'unknown';
+    if (info.isFile()) dirOrFile = 'file';
+    if (info.isDirectory()) dirOrFile = 'directory';
+    
+  });
 }
 
 const args = process.argv.slice(2);
@@ -47,7 +54,7 @@ const username = args.reduce(
 stdout.write(`Welcome to the File Manager, ${username} \n`);
 infoAboutCurDir();
 
-stdin.on('data', (data) => {
+stdin.on('data', async (data) => {
   const stringData = data.toString().trim();
 
   if (stringData === '.exit') exitFromFileManager();
@@ -56,7 +63,7 @@ stdin.on('data', (data) => {
 
   if (stringData.includes('cd')) cdCommand(stringData);
 
-  if (stringData === 'ls') lsCommand();
+  if (stringData === 'ls') await lsCommand();
 });
 
 process.on('SIGINT', exitFromFileManager);
