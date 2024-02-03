@@ -177,6 +177,7 @@ async function copyCommand(stringData) {
   const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
   try {
     await pipeline(originalFileStream, copyFileStream);
+    infoAboutCurDir();
   } catch (err) {
     console.error('Operation failed');
     infoAboutCurDir();
