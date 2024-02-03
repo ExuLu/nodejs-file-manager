@@ -11,26 +11,7 @@ import addError from './scripts/error.js';
 import createPath from './scripts/createPath.js';
 import cdCommand from './scripts/cd.js';
 import { notFile, wrongPath, noArguments } from './scripts/errMessages.js';
-
-function catCommand(userArg) {
-  if (userArg === '') {
-    addError('input', noArguments);
-    return;
-  }
-  const filePath = createPath(userArg);
-  const readStream = createReadStream(filePath, 'utf-8');
-  let data = '';
-  readStream.on('data', (chunk) => (data += chunk));
-  readStream.on('end', () => {
-    stdout.write(data + '\n');
-    infoAboutCurDir();
-  });
-  readStream.on('error', (err) => {
-    if (err.code === 'EISDIR') addError('input', notFile);
-    else if (err.code === 'ENOENT') addError('operation', wrongPath);
-    else console.log(err);
-  });
-}
+import catCommand from './scripts/cat.js';
 
 async function addCommand(userArg) {
   if (userArg.trim() === '') console.error('Invalid input');
