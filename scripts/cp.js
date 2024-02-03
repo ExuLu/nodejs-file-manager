@@ -4,7 +4,8 @@ import { cwd } from 'process';
 import { access } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import addError from './error.js';
-import { noArguments } from './errMessages.js';
+import { exist, noArguments, wrongPath } from './errMessages.js';
+import createPath from './createPath.js';
 
 export default async function copyCommand(userArg) {
   const userArgArray = userArg.split(' ');
@@ -14,26 +15,27 @@ export default async function copyCommand(userArg) {
     return;
   }
 
-  const origFilePath = userArgArray[0].includes('/Users')
-    ? userArgArray[0]
-    : join(cwd(), userArgArray[0]);
+  const origFilePath = createPath(userArgArray[0]);
+  const copyFilePath = createPath(userArgArray[1]);
 
-  const copyFilePath = userArgArray[1].includes('/Users')
-    ? userArgArray[1]
-    : join(cwd(), userArgArray[1]);
+  let fileExist;
 
   try {
     await access(copyFilePath);
-    console.error('Operation failed');
-    infoAboutCurDir();
+    fileExist = true;
+  } catch (err) {
+    fileExist = false;
+  }
+
+  if (fileExist) {
+    addError('operation', exist);
     return;
-  } catch (err) {}
+  }
 
   try {
     await access(origFilePath);
   } catch (err) {
-    console.error('Operation failed');
-    infoAboutCurDir();
+    addError('operation', wrongPath);
     return;
   }
 
@@ -43,7 +45,6 @@ export default async function copyCommand(userArg) {
     await pipeline(originalFileStream, copyFileStream);
     infoAboutCurDir();
   } catch (err) {
-    console.error('Operation failed');
-    infoAboutCurDir();
+    addError();
   }
 }
