@@ -75,6 +75,7 @@ function catCommand(stringData) {
 
 async function addCommand(stringData) {
   const userArg = stringData.slice(3).trim();
+
   if (userArg.trim() === '') console.error('Invalid input');
   const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
 
@@ -83,7 +84,9 @@ async function addCommand(stringData) {
     console.error('Operation failed');
   } catch (err) {
     if (err.code === 'ENOENT') {
-      await writeFile(userArg, '');
+      if (!userArg.includes('.') || userArg.indexOf('.') === userArg.length())
+        console.error('Invalid input');
+      else await writeFile(userArg, '');
     }
   }
   infoAboutCurDir();
