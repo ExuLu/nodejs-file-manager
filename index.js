@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
-import { readdir, stat, access, writeFile } from 'fs/promises';
+import { readdir, stat, access, writeFile, rename } from 'fs/promises';
 import { createReadStream } from 'fs';
 
 function exitFromFileManager() {
@@ -92,6 +92,45 @@ async function addCommand(stringData) {
   infoAboutCurDir();
 }
 
+async function renameCommand(stringData) {
+  const userArg = stringData.slice(3).trim();
+  const userArgArray = userArg.split(' ');
+
+  if (userArg.trim() === '' || !userArg.includes(' ')) {
+    console.error('Invalid input');
+    infoAboutCurDir();
+    return;
+  }
+
+  const oldFilePath = userArgArray[0].includes('/Users')
+    ? userArgArray[1]
+    : join(cwd(), userArgArray[0]);
+  const newFilePath = userArgArray[1].includes('/Users')
+    ? userArgArray[1]
+    : join(cwd(), userArgArray[1]);
+  let newPathExist;
+
+  try {
+    await access(newFilePath);
+    newPathExist = true;
+  } catch (err) {
+    newPathExist = false;
+  }
+
+  if (!newPathExist) {
+    try {
+      await access(oldFilePath);
+      await rename(oldFilePath, newFilePath);
+    } catch (err) {
+      if (err.code === 'ENOENT') console.error('Operation failed');
+    }
+  } else {
+    console.error('Operation failed');
+  }
+
+  infoAboutCurDir();
+}
+
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -117,6 +156,8 @@ stdin.on('data', async (data) => {
   if (stringData.includes('cat')) catCommand(stringData);
 
   if (stringData.includes('add')) await addCommand(stringData);
+
+  if (stringData.includes('rn')) await renameCommand(stringData);
 });
 
 process.on('SIGINT', exitFromFileManager);
