@@ -21,76 +21,64 @@ import addCommand from './scripts/add.js';
 import renameCommand from './scripts/rn.js';
 import copyCommand from './scripts/cp.js';
 import removeCommand from './scripts/rm.js';
+import moveCommand from './scripts/mv.js';
 
-// async function removeCommand(userArg) {
-//   if (userArg.trim() === '') console.error('Invalid input');
-//   const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
+// async function moveCommand(userArg) {
+//   const userArgArray = userArg.split(' ');
+
+//   if (userArg.trim() === '' || !userArg.includes(' ')) {
+//     console.error('Invalid input');
+//     infoAboutCurDir();
+//     return;
+//   }
+
+//   const oldFilePath = userArgArray[0].includes('/Users')
+//     ? userArgArray[0]
+//     : join(cwd(), userArgArray[0]);
+
+//   const newDirPath = userArgArray[1].includes('/Users')
+//     ? userArgArray[1]
+//     : join(cwd(), userArgArray[1]);
+
+//   const fileName = oldFilePath.slice(oldFilePath.lastIndexOf('/') + 1);
+//   console.log(fileName);
 
 //   try {
-//     await rm(filePath);
+//     await access(oldFilePath);
 //   } catch (err) {
-//     if (err.code === 'ENOENT') console.error('Operation failed');
+//     console.error('Operation failed');
+//     infoAboutCurDir();
+//     return;
 //   }
+
+//   try {
+//     await access(newDirPath);
+//     const info = await stat(newDirPath);
+//     if (!info.isDirectory()) {
+//       console.error('Invalid input');
+//       infoAboutCurDir();
+//       return;
+//     }
+//     const newDirFiles = await readdir(newDirPath);
+//     if (newDirFiles.includes(fileName)) {
+//       console.error('Operation failed');
+//       infoAboutCurDir();
+//       return;
+//     }
+//   } catch (err) {
+//     console.error('Operation failed');
+//     infoAboutCurDir();
+//     return;
+//   }
+
+//   const originalFileStream = createReadStream(oldFilePath);
+//   const copyFileStream = createWriteStream(join(newDirPath, fileName));
+//   originalFileStream.pipe(copyFileStream);
+
+//   await rm(oldFilePath);
 
 //   infoAboutCurDir();
 // }
-
-async function moveCommand(userArg) {
-  const userArgArray = userArg.split(' ');
-
-  if (userArg.trim() === '' || !userArg.includes(' ')) {
-    console.error('Invalid input');
-    infoAboutCurDir();
-    return;
-  }
-
-  const oldFilePath = userArgArray[0].includes('/Users')
-    ? userArgArray[0]
-    : join(cwd(), userArgArray[0]);
-
-  const newDirPath = userArgArray[1].includes('/Users')
-    ? userArgArray[1]
-    : join(cwd(), userArgArray[1]);
-
-  const fileName = oldFilePath.slice(oldFilePath.lastIndexOf('/') + 1);
-  console.log(fileName);
-
-  try {
-    await access(oldFilePath);
-  } catch (err) {
-    console.error('Operation failed');
-    infoAboutCurDir();
-    return;
-  }
-
-  try {
-    await access(newDirPath);
-    const info = await stat(newDirPath);
-    if (!info.isDirectory()) {
-      console.error('Invalid input');
-      infoAboutCurDir();
-      return;
-    }
-    const newDirFiles = await readdir(newDirPath);
-    if (newDirFiles.includes(fileName)) {
-      console.error('Operation failed');
-      infoAboutCurDir();
-      return;
-    }
-  } catch (err) {
-    console.error('Operation failed');
-    infoAboutCurDir();
-    return;
-  }
-
-  const originalFileStream = createReadStream(oldFilePath);
-  const copyFileStream = createWriteStream(join(newDirPath, fileName));
-  originalFileStream.pipe(copyFileStream);
-
-  await rm(oldFilePath);
-
-  infoAboutCurDir();
-}
 
 const args = process.argv.slice(2);
 
