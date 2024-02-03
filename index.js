@@ -5,21 +5,7 @@ import { createReadStream, createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
 import upCommand from './scripts/up.js';
 import infoAboutCurDir from './scripts/textCurrentInfo.js';
-
-function exitFromFileManager() {
-  stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
-  process.exit();
-}
-// function infoAboutCurDir() {
-//   stdout.write(`You are currently in ${cwd()} \n`);
-// }
-// function upCommand() {
-//   const upDirPath = cwd().slice(0, cwd().lastIndexOf('/'));
-//   try {
-//     chdir(upDirPath);
-//   } catch (err) {}
-//   infoAboutCurDir();
-// }
+import exitFromFileManager from './scripts/exit.js';
 
 async function cdCommand(stringData) {
   const userArg = stringData.slice(3);
@@ -277,7 +263,7 @@ infoAboutCurDir();
 stdin.on('data', async (data) => {
   const stringData = data.toString().trim();
 
-  if (stringData === '.exit') exitFromFileManager();
+  if (stringData === '.exit') exitFromFileManager(username);
 
   if (stringData === 'up') upCommand();
 
@@ -298,4 +284,4 @@ stdin.on('data', async (data) => {
   if (stringData.includes('mv')) await moveCommand(stringData);
 });
 
-process.on('SIGINT', exitFromFileManager);
+process.on('SIGINT', () => exitFromFileManager(username));
