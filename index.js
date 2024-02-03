@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
-import { readdir, stat, access, mkdir } from 'fs/promises';
+import { readdir, stat, access, writeFile } from 'fs/promises';
 import { createReadStream } from 'fs';
 
 function exitFromFileManager() {
@@ -83,7 +83,7 @@ async function addCommand(stringData) {
     console.error('Operation failed');
   } catch (err) {
     if (err.code === 'ENOENT') {
-      await mkdir(userArg);
+      await writeFile(userArg, '');
     }
   }
   infoAboutCurDir();
