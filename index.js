@@ -10,39 +10,14 @@ import lsCommand from './scripts/ls.js';
 import addError from './scripts/error.js';
 import createPath from './scripts/createPath.js';
 import cdCommand from './scripts/cd.js';
-
-const noArguments = 'You need to enter arguments after command';
-const notDir = 'You need enter path to a folder';
-const wrongPath = 'Such directory or file does not exist';
-
-// async function cdCommand(userArg) {
-//   if (userArg === '') {
-//     addError('input', noArguments);
-//     return;
-//   }
-//   const newDirPath = createPath(userArg);
-
-//   try {
-//     const dirInfo = await stat(userArg);
-//     if (dirInfo.isFile()) {
-//       addError('input', notDir);
-//       return;
-//     }
-//     chdir(newDirPath);
-//     infoAboutCurDir();
-//   } catch (err) {
-//     if (err.code === 'ENOENT') {
-//       addError('operation', wrongPath);
-//     }
-//   }
-// }
+import { notFile, wrongPath, noArguments } from './scripts/errMessages.js';
 
 function catCommand(userArg) {
   if (userArg === '') {
     addError('input', noArguments);
     return;
   }
-  const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
+  const filePath = createPath(userArg);
   const readStream = createReadStream(filePath, 'utf-8');
   let data = '';
   readStream.on('data', (chunk) => (data += chunk));
@@ -51,9 +26,9 @@ function catCommand(userArg) {
     infoAboutCurDir();
   });
   readStream.on('error', (err) => {
-    if (err.code === 'EISDIR') console.error('Invalid input');
-    if (err.code === 'ENOENT') console.error('Operation failed');
-    infoAboutCurDir();
+    if (err.code === 'EISDIR') addError('input', notFile);
+    else if (err.code === 'ENOENT') addError('operation', wrongPath);
+    else console.log(err);
   });
 }
 
