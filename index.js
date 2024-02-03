@@ -10,24 +10,34 @@ import lsCommand from './scripts/ls.js';
 import addError from './scripts/error.js';
 import createPath from './scripts/createPath.js';
 import cdCommand from './scripts/cd.js';
-import { notFile, wrongPath, noArguments } from './scripts/errMessages.js';
+import {
+  notFile,
+  wrongPath,
+  noArguments,
+  exist,
+} from './scripts/errMessages.js';
 import catCommand from './scripts/cat.js';
 
 async function addCommand(userArg) {
-  if (userArg.trim() === '') console.error('Invalid input');
-  const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
+  if (userArg === '') {
+    addError('input', noArguments);
+    return;
+  }
+  const filePath = createPath(userArg);
 
   try {
     await access(filePath);
-    console.error('Operation failed');
+    addError('operation', exist);
   } catch (err) {
     if (err.code === 'ENOENT') {
-      if (!userArg.includes('.') || userArg.indexOf('.') === userArg.length)
-        console.error('Invalid input');
-      else await writeFile(userArg, '');
-    }
+      if (!userArg.includes('.') || userArg.indexOf('.') === userArg.length - 1)
+        addError('input', notFile);
+      else {
+        await writeFile(userArg, '');
+        infoAboutCurDir();
+      }
+    } else addError();
   }
-  infoAboutCurDir();
 }
 
 async function renameCommand(userArg) {
