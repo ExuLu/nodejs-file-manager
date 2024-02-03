@@ -17,28 +17,7 @@ import {
   exist,
 } from './scripts/errMessages.js';
 import catCommand from './scripts/cat.js';
-
-async function addCommand(userArg) {
-  if (userArg === '') {
-    addError('input', noArguments);
-    return;
-  }
-  const filePath = createPath(userArg);
-
-  try {
-    await access(filePath);
-    addError('operation', exist);
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      if (!userArg.includes('.') || userArg.indexOf('.') === userArg.length - 1)
-        addError('input', notFile);
-      else {
-        await writeFile(userArg, '');
-        infoAboutCurDir();
-      }
-    } else addError();
-  }
-}
+import addCommand from './scripts/add.js';
 
 async function renameCommand(userArg) {
   const userArgArray = userArg.split(' ');
