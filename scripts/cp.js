@@ -1,11 +1,11 @@
 import { join } from 'path';
 import infoAboutCurDir from './textInfo.js';
-import { cwd } from 'process';
 import { access } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import addError from './error.js';
 import { exist, noArguments, wrongPath } from './errMessages.js';
 import createPath from './createPath.js';
+import { pipeline } from 'stream/promises';
 
 export default async function copyCommand(userArg) {
   const userArgArray = userArg.split(' ');
@@ -16,7 +16,9 @@ export default async function copyCommand(userArg) {
   }
 
   const origFilePath = createPath(userArgArray[0]);
-  const copyFilePath = createPath(userArgArray[1]);
+  const dirPath = createPath(userArgArray[1]);
+  const fileName = origFilePath.slice(origFilePath.lastIndexOf('/') + 1);
+  const copyFilePath = join(dirPath, fileName);
 
   let fileExist;
 
