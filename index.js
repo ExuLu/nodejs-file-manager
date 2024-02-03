@@ -18,13 +18,16 @@ function upCommand() {
   infoAboutCurDir();
 }
 
-function cdCommand(stringData) {
+async function cdCommand(stringData) {
   const userArg = stringData.slice(3);
   if (userArg.trim() === '') console.error('Invalid input');
   const newDirPath = userArg.includes('/Users')
     ? userArg
     : join(cwd(), userArg);
+
   try {
+    const dirInfo = await stat(userArg);
+    if (dirInfo.isFile()) console.error('Invalid input');
     chdir(newDirPath);
   } catch (err) {
     if (err.code === 'ENOENT') console.error('Operation failed');
@@ -88,7 +91,7 @@ stdin.on('data', async (data) => {
 
   if (stringData === 'up') upCommand();
 
-  if (stringData.includes('cd')) cdCommand(stringData);
+  if (stringData.includes('cd')) await cdCommand(stringData);
 
   if (stringData === 'ls') await lsCommand();
 
