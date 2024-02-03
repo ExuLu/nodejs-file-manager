@@ -31,18 +31,23 @@ function cdCommand(stringData) {
 
   infoAboutCurDir();
 }
-async function lsCommand() {
-  const subDirs = await readdir(cwd());
-  console.log(subDirs);
-  subDirs.forEach(async (dir, index) => {
-    const info = await stat(join(cwd(), dir));
-    let dirOrFile = 'unknown';
-    if (info.isFile()) dirOrFile = 'file';
-    if (info.isDirectory()) dirOrFile = 'directory';
-    
-  });
+async function infoAboutDir(dir) {
+  const info = await stat(join(cwd(), dir));
+  let dirOrFile = 'unknown';
+  if (info.isFile()) dirOrFile = 'file';
+  if (info.isDirectory()) dirOrFile = 'directory';
+  const infoObj = { Name: dir, Type: dirOrFile };
+  return infoObj;
 }
 
+async function lsCommand() {
+  const subDirs = await readdir(cwd());
+  const infoAboutDirs = subDirs.map(async (dir) => {
+    const info = await infoAboutDir(dir);
+    return info;
+  });
+  Promise.all(infoAboutDirs).then((values) => console.table(values));
+}
 const args = process.argv.slice(2);
 
 const username = args.reduce(
