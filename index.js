@@ -9,32 +9,33 @@ import exitFromFileManager from './scripts/exit.js';
 import lsCommand from './scripts/ls.js';
 import addError from './scripts/error.js';
 import createPath from './scripts/createPath.js';
+import cdCommand from './scripts/cd.js';
 
 const noArguments = 'You need to enter arguments after command';
 const notDir = 'You need enter path to a folder';
 const wrongPath = 'Such directory or file does not exist';
 
-async function cdCommand(userArg) {
-  if (userArg === '') {
-    addError('input', noArguments);
-    return;
-  }
-  const newDirPath = createPath(userArg);
+// async function cdCommand(userArg) {
+//   if (userArg === '') {
+//     addError('input', noArguments);
+//     return;
+//   }
+//   const newDirPath = createPath(userArg);
 
-  try {
-    const dirInfo = await stat(userArg);
-    if (dirInfo.isFile()) {
-      addError('input', notDir);
-      return;
-    }
-    chdir(newDirPath);
-    infoAboutCurDir();
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      addError('operation', wrongPath);
-    }
-  }
-}
+//   try {
+//     const dirInfo = await stat(userArg);
+//     if (dirInfo.isFile()) {
+//       addError('input', notDir);
+//       return;
+//     }
+//     chdir(newDirPath);
+//     infoAboutCurDir();
+//   } catch (err) {
+//     if (err.code === 'ENOENT') {
+//       addError('operation', wrongPath);
+//     }
+//   }
+// }
 
 function catCommand(userArg) {
   if (userArg === '') {
