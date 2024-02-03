@@ -240,6 +240,14 @@ async function moveCommand(stringData) {
     infoAboutCurDir();
     return;
   }
+
+  const originalFileStream = createReadStream(oldFilePath);
+  const copyFileStream = createWriteStream(join(newDirPath, fileName));
+  originalFileStream.pipe(copyFileStream);
+
+  await rm(oldFilePath);
+
+  infoAboutCurDir();
 }
 
 const args = process.argv.slice(2);
