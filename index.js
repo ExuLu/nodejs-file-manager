@@ -2,7 +2,6 @@ import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
 import { readdir, stat, access, writeFile, rename, rm } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
-import { error } from 'console';
 import { pipeline } from 'stream/promises';
 
 function exitFromFileManager() {
@@ -53,7 +52,19 @@ async function lsCommand() {
     const info = await infoAboutDir(dir);
     return info;
   });
-  await Promise.all(infoAboutDirs).then((values) => console.table(values));
+  await Promise.all(infoAboutDirs).then((values) => {
+    const arrWithDirs = values
+      .filter((value) => value.Type === 'directory')
+      .sort((a, b) => {
+        a.Name - b.Name;
+      });
+    const arrWithFiles = values
+      .filter((value) => value.Type === 'file')
+      .sort((a, b) => a.Name - b.Name);
+
+    const resultArray = arrWithDirs.concat(arrWithFiles);
+    console.table(resultArray);
+  });
   infoAboutCurDir();
 }
 
