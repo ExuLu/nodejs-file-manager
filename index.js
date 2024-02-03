@@ -19,92 +19,50 @@ import {
 import catCommand from './scripts/cat.js';
 import addCommand from './scripts/add.js';
 import renameCommand from './scripts/rn.js';
+import copyCommand from './scripts/cp.js';
 
-// async function renameCommand(userArg) {
+// async function copyCommand(userArg) {
 //   const userArgArray = userArg.split(' ');
 
-//   if (userArg === '' || userArgArray.length !== 2) {
-//     console.log('This error');
-//     addError('input', noArguments);
+//   if (userArg.trim() === '' || userArgArray.length !== 2) {
+//     console.error('Invalid input');
+//     infoAboutCurDir();
 //     return;
 //   }
 
-//   const oldFilePath = createPath(userArgArray[0]);
-//   const newFilePath = createPath(userArgArray[1]);
+//   const origFilePath = userArgArray[0].includes('/Users')
+//     ? userArgArray[0]
+//     : join(cwd(), userArgArray[0]);
 
-//   if (
-//     !oldFilePath.includes('.') ||
-//     !newFilePath.includes('.') ||
-//     oldFilePath.indexOf('.') === oldFilePath.length - 1 ||
-//     newFilePath.indexOf('.') === newFilePath.length - 1
-//   ) {
-//     addError('input', notFile);
-//     return;
-//   }
-//   let newPathExist;
+//   const copyFilePath = userArgArray[1].includes('/Users')
+//     ? userArgArray[1]
+//     : join(cwd(), userArgArray[1]);
 
 //   try {
-//     await access(newFilePath);
-//     newPathExist = true;
-//   } catch (err) {
-//     newPathExist = false;
-//   }
+//     await access(copyFilePath);
+//     console.error('Operation failed');
+//     infoAboutCurDir();
+//     return;
+//   } catch (err) {}
 
-//   if (newPathExist) {
-//     addError('operation', exist);
+//   try {
+//     await access(origFilePath);
+//   } catch (err) {
+//     console.error('Operation failed');
+//     infoAboutCurDir();
 //     return;
 //   }
 
+//   const originalFileStream = createReadStream(origFilePath, 'utf-8');
+//   const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
 //   try {
-//     await access(oldFilePath);
-//     await rename(oldFilePath, newFilePath);
+//     await pipeline(originalFileStream, copyFileStream);
+//     infoAboutCurDir();
 //   } catch (err) {
-//     if (err.code === 'ENOENT') addError('operation', wrongPath);
+//     console.error('Operation failed');
+//     infoAboutCurDir();
 //   }
 // }
-
-async function copyCommand(userArg) {
-  const userArgArray = userArg.split(' ');
-
-  if (userArg.trim() === '' || !userArg.includes(' ')) {
-    console.error('Invalid input');
-    infoAboutCurDir();
-    return;
-  }
-
-  const origFilePath = userArgArray[0].includes('/Users')
-    ? userArgArray[0]
-    : join(cwd(), userArgArray[0]);
-
-  const copyFilePath = userArgArray[1].includes('/Users')
-    ? userArgArray[1]
-    : join(cwd(), userArgArray[1]);
-
-  try {
-    await access(copyFilePath);
-    console.error('Operation failed');
-    infoAboutCurDir();
-    return;
-  } catch (err) {}
-
-  try {
-    await access(origFilePath);
-  } catch (err) {
-    console.error('Operation failed');
-    infoAboutCurDir();
-    return;
-  }
-
-  const originalFileStream = createReadStream(origFilePath, 'utf-8');
-  const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
-  try {
-    await pipeline(originalFileStream, copyFileStream);
-    infoAboutCurDir();
-  } catch (err) {
-    console.error('Operation failed');
-    infoAboutCurDir();
-  }
-}
 
 async function removeCommand(userArg) {
   if (userArg.trim() === '') console.error('Invalid input');
