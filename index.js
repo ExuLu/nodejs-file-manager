@@ -63,6 +63,11 @@ function catCommand(stringData) {
     stdout.write(data + '\n');
     infoAboutCurDir();
   });
+  readStream.on('error', (err) => {
+    if (err.code === 'EISDIR') console.error('Invalid input');
+    if (err.code === 'ENOENT') console.error('Operation failed');
+    infoAboutCurDir();
+  });
 }
 
 const args = process.argv.slice(2);
