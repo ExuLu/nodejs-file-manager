@@ -49,18 +49,17 @@ async function renameCommand(userArg) {
     newPathExist = false;
   }
 
-  if (!newPathExist) {
-    try {
-      await access(oldFilePath);
-      await rename(oldFilePath, newFilePath);
-    } catch (err) {
-      if (err.code === 'ENOENT') console.error('Operation failed');
-    }
-  } else {
-    console.error('Operation failed');
+  if (newPathExist) {
+    addError('operation', exist);
+    return;
   }
 
-  infoAboutCurDir();
+  try {
+    await access(oldFilePath);
+    await rename(oldFilePath, newFilePath);
+  } catch (err) {
+    if (err.code === 'ENOENT') addError('operation', wrongPath);
+  }
 }
 
 async function copyCommand(userArg) {
