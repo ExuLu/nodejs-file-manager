@@ -1,14 +1,14 @@
 export default function sorting(array) {
   const sortedArray = array.sort((a, b) => {
-    for (let i = 0; i < a.name.length; i++) {
-      if (!b.name[i]) {
-        const first = a.name[i - 1].toLowerCase().charCodeAt(0);
-        const second = b.name[i - 1].toLowerCase().charCodeAt(0);
+    for (let i = 0; i < a.Name.length; i++) {
+      if (!b.Name[i]) {
+        const first = a.Name[i - 1].toLowerCase().charCodeAt(0);
+        const second = b.Name[i - 1].toLowerCase().charCodeAt(0);
         return first - second;
       }
-      if (a.name[i] !== b.name[i]) {
-        const first = a.name[i].toLowerCase().charCodeAt(0);
-        const second = b.name[i].toLowerCase().charCodeAt(0);
+      if (a.Name[i] !== b.Name[i]) {
+        const first = a.Name[i].toLowerCase().charCodeAt(0);
+        const second = b.Name[i].toLowerCase().charCodeAt(0);
         return first - second;
       }
     }
