@@ -192,6 +192,27 @@ async function removeCommand(stringData) {
   infoAboutCurDir();
 }
 
+async function moveCommand(stringData) {
+  const userArg = stringData.slice(3).trim();
+  const userArgArray = userArg.split(' ');
+
+  if (userArg.trim() === '' || !userArg.includes(' ')) {
+    console.error('Invalid input');
+    infoAboutCurDir();
+    return;
+  }
+
+  const oldFilePath = userArgArray[0].includes('/Users')
+    ? userArgArray[0]
+    : join(cwd(), userArgArray[0]);
+
+  const newDirPath = userArgArray[0].includes('/Users')
+    ? userArgArray[0]
+    : join(cwd(), userArgArray[0]);
+
+    
+}
+
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -223,6 +244,8 @@ stdin.on('data', async (data) => {
   if (stringData.includes('cp')) await copyCommand(stringData);
 
   if (stringData.includes('rm')) await removeCommand(stringData);
+
+  if (stringData.includes('mv')) await moveCommand(stringData);
 });
 
 process.on('SIGINT', exitFromFileManager);
