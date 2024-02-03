@@ -1,4 +1,4 @@
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
 import { fileURLToPath } from 'url';
 
@@ -28,6 +28,18 @@ stdin.on('data', (data) => {
       chdir(upDirPath);
     } catch (err) {}
     stdout.write(`You are currently in ${cwd()} \n`);
+  }
+
+  if (stringData.includes('cd')) {
+    const newDirPath = join(cwd(), stringData.slice(3));
+
+    try {
+      chdir(newDirPath);
+    } catch (err) {
+      if (err.code === 'ENOENT') console.log('Operation failed');
+    }
+
+    console.error(`You are currently in ${cwd()} \n`);
   }
 });
 
