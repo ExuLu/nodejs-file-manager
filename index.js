@@ -9,6 +9,28 @@ function exitFromFileManager() {
 function infoAboutCurDir() {
   stdout.write(`You are currently in ${cwd()} \n`);
 }
+function upCommand() {
+  const upDirPath = cwd().slice(0, cwd().lastIndexOf('/'));
+  try {
+    chdir(upDirPath);
+  } catch (err) {}
+  infoAboutCurDir();
+}
+
+function cdCommand(stringData) {
+  const userArg = stringData.slice(3);
+  if (userArg.trim() === '') console.error('Invalid input');
+  const newDirPath = userArg.includes('/Users')
+    ? userArg
+    : join(cwd(), userArg);
+  try {
+    chdir(newDirPath);
+  } catch (err) {
+    if (err.code === 'ENOENT') console.error('Operation failed');
+  }
+
+  infoAboutCurDir();
+}
 
 const args = process.argv.slice(2);
 
@@ -26,28 +48,9 @@ stdin.on('data', (data) => {
 
   if (stringData === '.exit') exitFromFileManager();
 
-  if (stringData === 'up') {
-    const upDirPath = cwd().slice(0, cwd().lastIndexOf('/'));
-    try {
-      chdir(upDirPath);
-    } catch (err) {}
-    infoAboutCurDir();
-  }
+  if (stringData === 'up') upCommand();
 
-  if (stringData.includes('cd')) {
-    const userArg = stringData.slice(3);
-    if (userArg.trim() === '') console.error('Invalid input');
-    const newDirPath = userArg.includes('/Users')
-      ? userArg
-      : join(cwd(), userArg);
-    try {
-      chdir(newDirPath);
-    } catch (err) {
-      if (err.code === 'ENOENT') console.error('Operation failed');
-    }
-
-    infoAboutCurDir();
-  }
+  if (stringData.includes('cd')) cdCommand(stringData);
 });
 
 process.on('SIGINT', exitFromFileManager);
