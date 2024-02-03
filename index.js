@@ -37,7 +37,9 @@ stdin.on('data', (data) => {
   if (stringData.includes('cd')) {
     const userArg = stringData.slice(3);
     if (userArg.trim() === '') console.error('Invalid input');
-    const newDirPath = join(cwd(), stringData.slice(3));
+    const newDirPath = userArg.includes('/Users')
+      ? userArg
+      : join(cwd(), userArg);
     try {
       chdir(newDirPath);
     } catch (err) {
