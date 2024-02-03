@@ -3,7 +3,7 @@ import infoAboutCurDir from './textInfo.js';
 import { access } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import addError from './error.js';
-import { exist, noArguments, wrongPath } from './errMessages.js';
+import { exist, noArguments, notDir, wrongPath } from './errMessages.js';
 import createPath from './createPath.js';
 import { pipeline } from 'stream/promises';
 
@@ -47,6 +47,10 @@ export default async function copyCommand(userArg) {
     await pipeline(originalFileStream, copyFileStream);
     infoAboutCurDir();
   } catch (err) {
+    if (err.code === 'ENOTDIR') {
+      addError('input', notDir);
+      return;
+    }
     addError();
   }
 }
