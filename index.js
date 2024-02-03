@@ -229,6 +229,12 @@ async function moveCommand(stringData) {
       infoAboutCurDir();
       return;
     }
+    const newDirFiles = await readdir(newDirPath);
+    if (newDirFiles.includes(fileName)) {
+      console.error('Operation failed');
+      infoAboutCurDir();
+      return;
+    }
   } catch (err) {
     console.error('Operation failed');
     infoAboutCurDir();
