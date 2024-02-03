@@ -210,7 +210,27 @@ async function moveCommand(stringData) {
     ? userArgArray[0]
     : join(cwd(), userArgArray[0]);
 
-    
+  try {
+    await access(oldFilePath);
+  } catch (err) {
+    console.error('Operation failed');
+    infoAboutCurDir();
+    return;
+  }
+
+  try {
+    await access(newDirPath);
+    const info = await stat(newDirPath);
+    if (!info.isDirectory()) {
+      console.error('Invalid input');
+      infoAboutCurDir();
+      return;
+    }
+  } catch (err) {
+    console.error('Operation failed');
+    infoAboutCurDir();
+    return;
+  }
 }
 
 const args = process.argv.slice(2);
