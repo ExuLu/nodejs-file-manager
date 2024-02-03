@@ -2,6 +2,7 @@ import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
 import { readdir, stat, access, writeFile, rename } from 'fs/promises';
 import { createReadStream } from 'fs';
+import { error } from 'console';
 
 function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
@@ -103,7 +104,7 @@ async function renameCommand(stringData) {
   }
 
   const oldFilePath = userArgArray[0].includes('/Users')
-    ? userArgArray[1]
+    ? userArgArray[0]
     : join(cwd(), userArgArray[0]);
   const newFilePath = userArgArray[1].includes('/Users')
     ? userArgArray[1]
@@ -129,6 +130,37 @@ async function renameCommand(stringData) {
   }
 
   infoAboutCurDir();
+}
+
+async function copyCommand(stringData) {
+  const userArg = stringData.slice(3).trim();
+  const userArgArray = userArg.split(' ');
+
+  if (userArg.trim() === '' || !userArg.includes(' ')) {
+    console.error('Invalid input');
+    infoAboutCurDir();
+    return;
+  }
+
+  const origFilePath = userArgArray[0].includes('/Users')
+    ? userArgArray[0]
+    : join(cwd(), userArgArray[0]);
+
+  const copyFilePath = userArgArray[1].includes('/Users')
+    ? userArgArray[1]
+    : join(cwd(), userArgArray[1]);
+
+  try {
+    await access(origFilePath);
+  } catch (err) {
+    console.error('Invalid input');
+    infoAboutCurDir();
+    return;
+  }
+
+
+  
+
 }
 
 const args = process.argv.slice(2);
@@ -158,6 +190,8 @@ stdin.on('data', async (data) => {
   if (stringData.includes('add')) await addCommand(stringData);
 
   if (stringData.includes('rn')) await renameCommand(stringData);
+
+  if (stringData.includes('cp')) await copyCommand(stringData);
 });
 
 process.on('SIGINT', exitFromFileManager);
