@@ -8,6 +8,7 @@ import infoAboutCurDir from './scripts/textInfo.js';
 import exitFromFileManager from './scripts/exit.js';
 import lsCommand from './scripts/ls.js';
 import addError from './scripts/error.js';
+import createPath from './scripts/createPath.js';
 
 const noArguments = 'You need to enter arguments after command';
 const notDir = 'You need enter path to a folder';
@@ -18,9 +19,7 @@ async function cdCommand(userArg) {
     addError('input', noArguments);
     return;
   }
-  const newDirPath = userArg.includes('/Users')
-    ? userArg
-    : join(cwd(), userArg);
+  const newDirPath = createPath(userArg);
 
   try {
     const dirInfo = await stat(userArg);
