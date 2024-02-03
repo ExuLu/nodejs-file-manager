@@ -165,12 +165,21 @@ async function copyCommand(stringData) {
     return;
   } catch (err) {}
 
+  try {
+    await access(origFilePath);
+  } catch (err) {
+    console.error('Operation failed');
+    infoAboutCurDir();
+    return;
+  }
+
   const originalFileStream = createReadStream(origFilePath, 'utf-8');
   const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
   try {
     await pipeline(originalFileStream, copyFileStream);
   } catch (err) {
-    console.log(err.code);
+    console.error('Operation failed');
+    infoAboutCurDir();
   }
 }
 
