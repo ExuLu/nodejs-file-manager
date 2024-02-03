@@ -4,7 +4,7 @@ import { readdir, stat, access, writeFile, rename, rm } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
 import upCommand from './scripts/up.js';
-import infoAboutCurDir from './scripts/textCurrentInfo.js';
+import infoAboutCurDir from './scripts/textInfo.js';
 import exitFromFileManager from './scripts/exit.js';
 
 async function cdCommand(stringData) {
@@ -85,7 +85,7 @@ async function addCommand(stringData) {
     console.error('Operation failed');
   } catch (err) {
     if (err.code === 'ENOENT') {
-      if (!userArg.includes('.') || userArg.indexOf('.') === userArg.length())
+      if (!userArg.includes('.') || userArg.indexOf('.') === userArg.length)
         console.error('Invalid input');
       else await writeFile(userArg, '');
     }
