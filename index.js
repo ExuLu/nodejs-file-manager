@@ -21,61 +21,18 @@ import addCommand from './scripts/add.js';
 import renameCommand from './scripts/rn.js';
 import copyCommand from './scripts/cp.js';
 
-// async function copyCommand(userArg) {
-//   const userArgArray = userArg.split(' ');
-
-//   if (userArg.trim() === '' || userArgArray.length !== 2) {
-//     console.error('Invalid input');
-//     infoAboutCurDir();
-//     return;
-//   }
-
-//   const origFilePath = userArgArray[0].includes('/Users')
-//     ? userArgArray[0]
-//     : join(cwd(), userArgArray[0]);
-
-//   const copyFilePath = userArgArray[1].includes('/Users')
-//     ? userArgArray[1]
-//     : join(cwd(), userArgArray[1]);
+// async function removeCommand(userArg) {
+//   if (userArg.trim() === '') console.error('Invalid input');
+//   const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
 
 //   try {
-//     await access(copyFilePath);
-//     console.error('Operation failed');
-//     infoAboutCurDir();
-//     return;
-//   } catch (err) {}
-
-//   try {
-//     await access(origFilePath);
+//     await rm(filePath);
 //   } catch (err) {
-//     console.error('Operation failed');
-//     infoAboutCurDir();
-//     return;
+//     if (err.code === 'ENOENT') console.error('Operation failed');
 //   }
 
-//   const originalFileStream = createReadStream(origFilePath, 'utf-8');
-//   const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
-//   try {
-//     await pipeline(originalFileStream, copyFileStream);
-//     infoAboutCurDir();
-//   } catch (err) {
-//     console.error('Operation failed');
-//     infoAboutCurDir();
-//   }
+//   infoAboutCurDir();
 // }
-
-async function removeCommand(userArg) {
-  if (userArg.trim() === '') console.error('Invalid input');
-  const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
-
-  try {
-    await rm(filePath);
-  } catch (err) {
-    if (err.code === 'ENOENT') console.error('Operation failed');
-  }
-
-  infoAboutCurDir();
-}
 
 async function moveCommand(userArg) {
   const userArgArray = userArg.split(' ');
