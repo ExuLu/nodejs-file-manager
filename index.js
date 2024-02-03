@@ -26,37 +26,6 @@ async function cdCommand(stringData) {
   infoAboutCurDir();
 }
 
-// async function infoAboutDir(dir) {
-//   const info = await stat(join(cwd(), dir));
-//   let dirOrFile = 'unknown';
-//   if (info.isFile()) dirOrFile = 'file';
-//   if (info.isDirectory()) dirOrFile = 'directory';
-//   const infoObj = { Name: dir, Type: dirOrFile };
-//   return infoObj;
-// }
-
-// async function lsCommand() {
-//   const subDirs = await readdir(cwd());
-//   const infoAboutDirs = subDirs.map(async (dir) => {
-//     const info = await infoAboutDir(dir);
-//     return info;
-//   });
-//   await Promise.all(infoAboutDirs).then((values) => {
-//     const arrWithDirs = values
-//       .filter((value) => value.Type === 'directory')
-//       .sort((a, b) => {
-//         a.Name - b.Name;
-//       });
-//     const arrWithFiles = values
-//       .filter((value) => value.Type === 'file')
-//       .sort((a, b) => a.Name - b.Name);
-
-//     const resultArray = arrWithDirs.concat(arrWithFiles);
-//     console.table(resultArray);
-//   });
-//   infoAboutCurDir();
-// }
-
 function catCommand(stringData) {
   const userArg = stringData.slice(3).trim();
   if (userArg.trim() === '') console.error('Invalid input');

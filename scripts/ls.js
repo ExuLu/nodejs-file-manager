@@ -13,11 +13,17 @@ export default async function lsCommand() {
     const arrWithDirs = values
       .filter((value) => value.Type === 'directory')
       .sort((a, b) => {
-        a.Name - b.Name;
+        const firstName = a.Name.toLowerCase().charCodeAt(0);
+        const secondName = b.Name.toLowerCase().charCodeAt(0);
+        return firstName - secondName;
       });
     const arrWithFiles = values
       .filter((value) => value.Type === 'file')
-      .sort((a, b) => a.Name - b.Name);
+      .sort((a, b) => {
+        const firstName = a.Name.toLowerCase().charCodeAt(0);
+        const secondName = b.Name.toLowerCase().charCodeAt(0);
+        return firstName - secondName;
+      });
 
     const resultArray = arrWithDirs.concat(arrWithFiles);
     console.table(resultArray);
