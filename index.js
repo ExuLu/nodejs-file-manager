@@ -39,8 +39,7 @@ async function cdCommand(userArg) {
 
 function catCommand(userArg) {
   if (userArg === '') {
-    console.error('Invalid input');
-    infoAboutCurDir();
+    addError('input', noArguments);
     return;
   }
   const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
