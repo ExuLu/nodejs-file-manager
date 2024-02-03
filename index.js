@@ -1,6 +1,6 @@
-import { dirname, join } from 'path';
+import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
-import { fileURLToPath } from 'url';
+import { readdir } from 'fs/promises';
 
 function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
@@ -31,6 +31,10 @@ function cdCommand(stringData) {
 
   infoAboutCurDir();
 }
+async function lsCommand() {
+  const subDirs = await readdir(cwd());
+  console.log(subDirs);
+}
 
 const args = process.argv.slice(2);
 
@@ -51,6 +55,8 @@ stdin.on('data', (data) => {
   if (stringData === 'up') upCommand();
 
   if (stringData.includes('cd')) cdCommand(stringData);
+
+  if (stringData === 'ls') lsCommand();
 });
 
 process.on('SIGINT', exitFromFileManager);
