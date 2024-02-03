@@ -1,13 +1,6 @@
 import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
-import {
-  readdir,
-  stat,
-  access,
-  writeFile,
-  rename,
-  copyFile,
-} from 'fs/promises';
+import { readdir, stat, access, writeFile, rename, rm } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import { error } from 'console';
 import { pipeline } from 'stream/promises';
@@ -184,6 +177,21 @@ async function copyCommand(stringData) {
   }
 }
 
+async function removeCommand(stringData) {
+  const userArg = stringData.slice(3).trim();
+
+  if (userArg.trim() === '') console.error('Invalid input');
+  const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
+
+  try {
+    await rm(filePath);
+  } catch (err) {
+    if (err.code === 'ENOENT') console.error('Operation failed');
+  }
+
+  infoAboutCurDir();
+}
+
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -213,6 +221,8 @@ stdin.on('data', async (data) => {
   if (stringData.includes('rn')) await renameCommand(stringData);
 
   if (stringData.includes('cp')) await copyCommand(stringData);
+
+  if (stringData.includes('rm')) await removeCommand(stringData);
 });
 
 process.on('SIGINT', exitFromFileManager);
