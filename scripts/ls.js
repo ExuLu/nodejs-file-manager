@@ -1,6 +1,7 @@
 import { readdir } from 'fs/promises';
 import { cwd } from 'process';
 import infoAboutDir from './knowStats.js';
+import infoAboutCurDir from './textInfo.js';
 
 export default async function lsCommand() {
   const subDirs = await readdir(cwd());

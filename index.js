@@ -6,6 +6,7 @@ import { pipeline } from 'stream/promises';
 import upCommand from './scripts/up.js';
 import infoAboutCurDir from './scripts/textInfo.js';
 import exitFromFileManager from './scripts/exit.js';
+import lsCommand from './scripts/ls.js';
 
 async function cdCommand(stringData) {
   const userArg = stringData.slice(3);
@@ -25,36 +26,36 @@ async function cdCommand(stringData) {
   infoAboutCurDir();
 }
 
-async function infoAboutDir(dir) {
-  const info = await stat(join(cwd(), dir));
-  let dirOrFile = 'unknown';
-  if (info.isFile()) dirOrFile = 'file';
-  if (info.isDirectory()) dirOrFile = 'directory';
-  const infoObj = { Name: dir, Type: dirOrFile };
-  return infoObj;
-}
+// async function infoAboutDir(dir) {
+//   const info = await stat(join(cwd(), dir));
+//   let dirOrFile = 'unknown';
+//   if (info.isFile()) dirOrFile = 'file';
+//   if (info.isDirectory()) dirOrFile = 'directory';
+//   const infoObj = { Name: dir, Type: dirOrFile };
+//   return infoObj;
+// }
 
-async function lsCommand() {
-  const subDirs = await readdir(cwd());
-  const infoAboutDirs = subDirs.map(async (dir) => {
-    const info = await infoAboutDir(dir);
-    return info;
-  });
-  await Promise.all(infoAboutDirs).then((values) => {
-    const arrWithDirs = values
-      .filter((value) => value.Type === 'directory')
-      .sort((a, b) => {
-        a.Name - b.Name;
-      });
-    const arrWithFiles = values
-      .filter((value) => value.Type === 'file')
-      .sort((a, b) => a.Name - b.Name);
+// async function lsCommand() {
+//   const subDirs = await readdir(cwd());
+//   const infoAboutDirs = subDirs.map(async (dir) => {
+//     const info = await infoAboutDir(dir);
+//     return info;
+//   });
+//   await Promise.all(infoAboutDirs).then((values) => {
+//     const arrWithDirs = values
+//       .filter((value) => value.Type === 'directory')
+//       .sort((a, b) => {
+//         a.Name - b.Name;
+//       });
+//     const arrWithFiles = values
+//       .filter((value) => value.Type === 'file')
+//       .sort((a, b) => a.Name - b.Name);
 
-    const resultArray = arrWithDirs.concat(arrWithFiles);
-    console.table(resultArray);
-  });
-  infoAboutCurDir();
-}
+//     const resultArray = arrWithDirs.concat(arrWithFiles);
+//     console.table(resultArray);
+//   });
+//   infoAboutCurDir();
+// }
 
 function catCommand(stringData) {
   const userArg = stringData.slice(3).trim();
