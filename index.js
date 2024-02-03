@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
-import { readdir, stat } from 'fs/promises';
+import { readdir, stat, access, mkdir } from 'fs/promises';
 import { createReadStream } from 'fs';
 
 function exitFromFileManager() {
@@ -73,6 +73,22 @@ function catCommand(stringData) {
   });
 }
 
+async function addCommand(stringData) {
+  const userArg = stringData.slice(3).trim();
+  if (userArg.trim() === '') console.error('Invalid input');
+  const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
+
+  try {
+    await access(filePath);
+    console.error('Operation failed');
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      await mkdir(userArg);
+    }
+  }
+  infoAboutCurDir();
+}
+
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -91,11 +107,13 @@ stdin.on('data', async (data) => {
 
   if (stringData === 'up') upCommand();
 
-  if (stringData.includes('cd')) await cdCommand(stringData);
+  if (stringData.includes('cd ')) await cdCommand(stringData);
 
   if (stringData === 'ls') await lsCommand();
 
   if (stringData.includes('cat')) catCommand(stringData);
+
+  if (stringData.includes('add')) await addCommand(stringData);
 });
 
 process.on('SIGINT', exitFromFileManager);
