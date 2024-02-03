@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { chdir, cwd, stdin, stdout } from 'process';
 import { readdir, stat } from 'fs/promises';
+import { createReadStream } from 'fs';
 
 function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
@@ -31,6 +32,7 @@ function cdCommand(stringData) {
 
   infoAboutCurDir();
 }
+
 async function infoAboutDir(dir) {
   const info = await stat(join(cwd(), dir));
   let dirOrFile = 'unknown';
@@ -48,6 +50,17 @@ async function lsCommand() {
   });
   Promise.all(infoAboutDirs).then((values) => console.table(values));
 }
+
+function catCommand(stringData) {
+  const userArg = stringData.slice(3).trim();
+  if (userArg.trim() === '') console.error('Invalid input');
+  const filePath = userArg.includes('/Users') ? userArg : join(cwd(), userArg);
+  const readStream = createReadStream(filePath, 'utf-8');
+  let data = '';
+  readStream.on('data', (chunk) => (data += chunk));
+  readStream.on('end', () => stdout.write(data + '\n'));
+}
+
 const args = process.argv.slice(2);
 
 const username = args.reduce(
@@ -69,6 +82,8 @@ stdin.on('data', async (data) => {
   if (stringData.includes('cd')) cdCommand(stringData);
 
   if (stringData === 'ls') await lsCommand();
+
+  if (stringData.includes('cat')) catCommand(stringData);
 });
 
 process.on('SIGINT', exitFromFileManager);
