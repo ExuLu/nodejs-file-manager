@@ -48,7 +48,8 @@ async function lsCommand() {
     const info = await infoAboutDir(dir);
     return info;
   });
-  Promise.all(infoAboutDirs).then((values) => console.table(values));
+  await Promise.all(infoAboutDirs).then((values) => console.table(values));
+  infoAboutCurDir();
 }
 
 function catCommand(stringData) {
@@ -58,7 +59,10 @@ function catCommand(stringData) {
   const readStream = createReadStream(filePath, 'utf-8');
   let data = '';
   readStream.on('data', (chunk) => (data += chunk));
-  readStream.on('end', () => stdout.write(data + '\n'));
+  readStream.on('end', () => {
+    stdout.write(data + '\n');
+    infoAboutCurDir();
+  });
 }
 
 const args = process.argv.slice(2);
