@@ -20,6 +20,7 @@ import catCommand from './scripts/cat.js';
 import addCommand from './scripts/add.js';
 import renameCommand from './scripts/rn.js';
 import copyCommand from './scripts/cp.js';
+import removeCommand from './scripts/rm.js';
 
 // async function removeCommand(userArg) {
 //   if (userArg.trim() === '') console.error('Invalid input');
