@@ -206,9 +206,12 @@ async function moveCommand(stringData) {
     ? userArgArray[0]
     : join(cwd(), userArgArray[0]);
 
-  const newDirPath = userArgArray[0].includes('/Users')
-    ? userArgArray[0]
-    : join(cwd(), userArgArray[0]);
+  const newDirPath = userArgArray[1].includes('/Users')
+    ? userArgArray[1]
+    : join(cwd(), userArgArray[1]);
+
+  const fileName = oldFilePath.slice(oldFilePath.lastIndexOf('/') + 1);
+  console.log(fileName);
 
   try {
     await access(oldFilePath);
