@@ -3,21 +3,23 @@ import { chdir, cwd, stdin, stdout } from 'process';
 import { readdir, stat, access, writeFile, rename, rm } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
+import upCommand from './scripts/up.js';
+import infoAboutCurDir from './scripts/textCurrentInfo.js';
 
 function exitFromFileManager() {
   stdout.write(`\nThank you for using File Manager, ${username}, goodbye!`);
   process.exit();
 }
-function infoAboutCurDir() {
-  stdout.write(`You are currently in ${cwd()} \n`);
-}
-function upCommand() {
-  const upDirPath = cwd().slice(0, cwd().lastIndexOf('/'));
-  try {
-    chdir(upDirPath);
-  } catch (err) {}
-  infoAboutCurDir();
-}
+// function infoAboutCurDir() {
+//   stdout.write(`You are currently in ${cwd()} \n`);
+// }
+// function upCommand() {
+//   const upDirPath = cwd().slice(0, cwd().lastIndexOf('/'));
+//   try {
+//     chdir(upDirPath);
+//   } catch (err) {}
+//   infoAboutCurDir();
+// }
 
 async function cdCommand(stringData) {
   const userArg = stringData.slice(3);
