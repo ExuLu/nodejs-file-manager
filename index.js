@@ -18,49 +18,50 @@ import {
 } from './scripts/errMessages.js';
 import catCommand from './scripts/cat.js';
 import addCommand from './scripts/add.js';
+import renameCommand from './scripts/rn.js';
 
-async function renameCommand(userArg) {
-  const userArgArray = userArg.split(' ');
+// async function renameCommand(userArg) {
+//   const userArgArray = userArg.split(' ');
 
-  if (userArg === '' || userArgArray.length !== 2) {
-    console.log('This error');
-    addError('input', noArguments);
-    return;
-  }
+//   if (userArg === '' || userArgArray.length !== 2) {
+//     console.log('This error');
+//     addError('input', noArguments);
+//     return;
+//   }
 
-  const oldFilePath = createPath(userArgArray[0]);
-  const newFilePath = createPath(userArgArray[1]);
+//   const oldFilePath = createPath(userArgArray[0]);
+//   const newFilePath = createPath(userArgArray[1]);
 
-  if (
-    !oldFilePath.includes('.') ||
-    !newFilePath.includes('.') ||
-    oldFilePath.indexOf('.') === oldFilePath.length - 1 ||
-    newFilePath.indexOf('.') === newFilePath.length - 1
-  ) {
-    addError('input', notFile);
-    return;
-  }
-  let newPathExist;
+//   if (
+//     !oldFilePath.includes('.') ||
+//     !newFilePath.includes('.') ||
+//     oldFilePath.indexOf('.') === oldFilePath.length - 1 ||
+//     newFilePath.indexOf('.') === newFilePath.length - 1
+//   ) {
+//     addError('input', notFile);
+//     return;
+//   }
+//   let newPathExist;
 
-  try {
-    await access(newFilePath);
-    newPathExist = true;
-  } catch (err) {
-    newPathExist = false;
-  }
+//   try {
+//     await access(newFilePath);
+//     newPathExist = true;
+//   } catch (err) {
+//     newPathExist = false;
+//   }
 
-  if (newPathExist) {
-    addError('operation', exist);
-    return;
-  }
+//   if (newPathExist) {
+//     addError('operation', exist);
+//     return;
+//   }
 
-  try {
-    await access(oldFilePath);
-    await rename(oldFilePath, newFilePath);
-  } catch (err) {
-    if (err.code === 'ENOENT') addError('operation', wrongPath);
-  }
-}
+//   try {
+//     await access(oldFilePath);
+//     await rename(oldFilePath, newFilePath);
+//   } catch (err) {
+//     if (err.code === 'ENOENT') addError('operation', wrongPath);
+//   }
+// }
 
 async function copyCommand(userArg) {
   const userArgArray = userArg.split(' ');
