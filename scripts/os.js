@@ -1,6 +1,7 @@
 import { EOL, arch, cpus, homedir, userInfo } from 'os';
 import addError from './error.js';
 import { noArguments, wrongArgs } from './errMessages.js';
+import infoAboutCurDir from './textInfo.js';
 
 export default function osInfo(userArg) {
   if (userArg.trim() === '') {
@@ -15,7 +16,7 @@ export default function osInfo(userArg) {
   const command = userArg.slice(2);
   if (command === 'EOL')
     console.log(`You default system End-Of-Line is: ${EOL}`);
-  if (command === 'cpus') {
+  else if (command === 'cpus') {
     const cPUS = cpus();
     const cpuNum = cPUS.length;
     console.log(`Total number of cpus: ${cpuNum}`);
@@ -26,14 +27,16 @@ export default function osInfo(userArg) {
 
       console.log(`${name}: model: ${model}, clock rate: ${speed}GHz`);
     });
-  }
-  if (command === 'homedir') {
+  } else if (command === 'homedir') {
     console.log(`Your home directory: ${homedir()}`);
-  }
-  if (command === 'username') {
+  } else if (command === 'username') {
     console.log(`Your system username: ${userInfo().username}`);
+  } else if (command === 'architecture') {
+    console.log(`Node.js binary has compiled for ${arch()} CPU architecture`);
+  } else {
+    addError('input', wrongArgs);
+    return;
   }
-  if (command === 'architecture') {
-    console.log(`Node.js binary has compiled for ${arch()} CPU architecture`)
-  }
+
+  infoAboutCurDir();
 }
