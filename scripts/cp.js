@@ -18,6 +18,13 @@ export default async function copyCommand(userArg) {
   const origFilePath = createPath(userArgArray[0]);
   const dirPath = createPath(userArgArray[1]);
   const fileName = origFilePath.slice(origFilePath.lastIndexOf('/') + 1);
+  if (
+    !fileName.includes('.') ||
+    fileName.indexOf('.') === fileName.length - 1
+  ) {
+    addError('input', notFile);
+    return;
+  }
   const copyFilePath = join(dirPath, fileName);
 
   let fileExist;
