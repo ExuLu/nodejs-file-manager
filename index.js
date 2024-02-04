@@ -1,84 +1,16 @@
-import { join } from 'path';
-import { chdir, cwd, stdin, stdout } from 'process';
-import { readdir, stat, access, writeFile, rename, rm } from 'fs/promises';
-import { createReadStream, createWriteStream } from 'fs';
-import { pipeline } from 'stream/promises';
+import { stdout, stdin } from 'process';
 import upCommand from './scripts/up.js';
 import infoAboutCurDir from './scripts/textInfo.js';
 import exitFromFileManager from './scripts/exit.js';
 import lsCommand from './scripts/ls.js';
-import addError from './scripts/error.js';
-import createPath from './scripts/createPath.js';
 import cdCommand from './scripts/cd.js';
-import {
-  notFile,
-  wrongPath,
-  noArguments,
-  exist,
-} from './scripts/errMessages.js';
 import catCommand from './scripts/cat.js';
 import addCommand from './scripts/add.js';
 import renameCommand from './scripts/rn.js';
 import copyCommand from './scripts/cp.js';
 import removeCommand from './scripts/rm.js';
 import moveCommand from './scripts/mv.js';
-
-// async function moveCommand(userArg) {
-//   const userArgArray = userArg.split(' ');
-
-//   if (userArg.trim() === '' || !userArg.includes(' ')) {
-//     console.error('Invalid input');
-//     infoAboutCurDir();
-//     return;
-//   }
-
-//   const oldFilePath = userArgArray[0].includes('/Users')
-//     ? userArgArray[0]
-//     : join(cwd(), userArgArray[0]);
-
-//   const newDirPath = userArgArray[1].includes('/Users')
-//     ? userArgArray[1]
-//     : join(cwd(), userArgArray[1]);
-
-//   const fileName = oldFilePath.slice(oldFilePath.lastIndexOf('/') + 1);
-//   console.log(fileName);
-
-//   try {
-//     await access(oldFilePath);
-//   } catch (err) {
-//     console.error('Operation failed');
-//     infoAboutCurDir();
-//     return;
-//   }
-
-//   try {
-//     await access(newDirPath);
-//     const info = await stat(newDirPath);
-//     if (!info.isDirectory()) {
-//       console.error('Invalid input');
-//       infoAboutCurDir();
-//       return;
-//     }
-//     const newDirFiles = await readdir(newDirPath);
-//     if (newDirFiles.includes(fileName)) {
-//       console.error('Operation failed');
-//       infoAboutCurDir();
-//       return;
-//     }
-//   } catch (err) {
-//     console.error('Operation failed');
-//     infoAboutCurDir();
-//     return;
-//   }
-
-//   const originalFileStream = createReadStream(oldFilePath);
-//   const copyFileStream = createWriteStream(join(newDirPath, fileName));
-//   originalFileStream.pipe(copyFileStream);
-
-//   await rm(oldFilePath);
-
-//   infoAboutCurDir();
-// }
+import osInfo from './scripts/os.js';
 
 const args = process.argv.slice(2);
 
@@ -93,46 +25,52 @@ infoAboutCurDir();
 
 stdin.on('data', async (data) => {
   const stringData = data.toString().trim();
+  const command = stringData.slice(0, 3).trim();
 
   if (stringData === '.exit') exitFromFileManager(username);
 
-  if (stringData === 'up') upCommand();
+  if (command === 'up') upCommand();
 
-  if (stringData.includes('cd')) {
+  if (command === 'cd') {
     const userArg = stringData.slice(3);
     await cdCommand(userArg);
   }
 
-  if (stringData === 'ls') await lsCommand();
+  if (command === 'ls') await lsCommand();
 
-  if (stringData.includes('cat')) {
+  if (command === 'cat') {
     const userArg = stringData.slice(4);
     catCommand(userArg);
   }
 
-  if (stringData.includes('add')) {
+  if (command === 'add') {
     const userArg = stringData.slice(4);
     await addCommand(userArg);
   }
 
-  if (stringData.includes('rn')) {
+  if (command === 'rn') {
     const userArg = stringData.slice(3);
     await renameCommand(userArg);
   }
 
-  if (stringData.includes('cp')) {
+  if (command === 'cp') {
     const userArg = stringData.slice(3);
     await copyCommand(userArg);
   }
 
-  if (stringData.includes('rm')) {
+  if (command === 'rm') {
     const userArg = stringData.slice(3);
     await removeCommand(userArg);
   }
 
-  if (stringData.includes('mv')) {
+  if (command === 'mv') {
     const userArg = stringData.slice(3);
     await moveCommand(userArg);
+  }
+
+  if (command === 'os') {
+    const userArg = stringData.slice(3);
+    osInfo(userArg);
   }
 });
 
