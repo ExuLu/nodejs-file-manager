@@ -4,10 +4,10 @@ import { exist, noArguments, notFile, wrongPath } from './errMessages.js';
 import addError from './error.js';
 import { access } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
-import { createBrotliCompress } from 'zlib';
+import { createBrotliCompress, createBrotliDecompress } from 'zlib';
 import infoAboutCurDir from './textInfo.js';
 
-export default async function compressCommand(userArg) {
+export default async function decompressCommand(userArg) {
   const userArgArray = userArg.split(' ');
 
   if (userArg.trim() === '' || userArgArray.length !== 2) {
@@ -15,23 +15,24 @@ export default async function compressCommand(userArg) {
     return;
   }
 
-  const origFilePath = createPath(userArgArray[0]);
+  const archivePath = createPath(userArgArray[0]);
   const dirPath = createPath(userArgArray[1]);
-  const fileName = origFilePath.slice(origFilePath.lastIndexOf('/') + 1);
+  const archiveName = archivePath.slice(archivePath.lastIndexOf('/') + 1);
   if (
-    !fileName.includes('.') ||
-    fileName.indexOf('.') === fileName.length - 1
+    !archiveName.includes('.') ||
+    archiveName.indexOf('.') === archiveName.length - 1
   ) {
     addError('input', notFile);
     return;
   }
-  const archName = fileName.slice(0, fileName.lastIndexOf('.')) + '.br';
-  const archPath = join(dirPath, archName);
+  const decompressFileName =
+    archiveName.slice(0, archiveName.lastIndexOf('.')) + '.txt';
+  const decompressFilePath = join(dirPath, decompressFileName);
 
   let fileExist;
 
   try {
-    await access(archPath);
+    await access(decompressFilePath);
     fileExist = true;
   } catch (err) {
     fileExist = false;
@@ -43,16 +44,16 @@ export default async function compressCommand(userArg) {
   }
 
   try {
-    await access(origFilePath);
+    await access(archivePath);
   } catch (err) {
     addError('operation', wrongPath);
     return;
   }
 
   try {
-    const readStream = createReadStream(origFilePath, 'utf-8');
-    const writeStream = createWriteStream(archPath);
-    const brotli = createBrotliCompress();
+    const readStream = createReadStream(archivePath);
+    const writeStream = createWriteStream(decompressFilePath, 'utf-8');
+    const brotli = createBrotliDecompress();
     readStream.pipe(brotli).pipe(writeStream);
     infoAboutCurDir();
   } catch (err) {
