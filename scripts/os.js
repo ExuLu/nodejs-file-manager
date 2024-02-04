@@ -1,4 +1,4 @@
-import { EOL, cpus } from 'os';
+import { EOL, cpus, homedir } from 'os';
 import addError from './error.js';
 import { noArguments, wrongArgs } from './errMessages.js';
 
@@ -26,5 +26,8 @@ export default function osInfo(userArg) {
 
       console.log(`${name}: model: ${model}, clock rate: ${speed}GHz`);
     });
+  }
+  if (command === 'homedir') {
+    console.log(`Your home directory: ${homedir()}`);
   }
 }
