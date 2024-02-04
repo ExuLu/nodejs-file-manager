@@ -95,7 +95,7 @@ rm /Users/some_user/file.txt
 **os** - Print operation system info to the console. You need to enter space and one of following arguments in format
 
 ```
---arg
+os --arg
 ```
 
 - EOL - Get default system End-Of-Line and print it to console.
