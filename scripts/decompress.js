@@ -1,13 +1,13 @@
 import { join } from 'path';
-import infoAboutCurDir from './textInfo.js';
+import createPath from './createPath.js';
+import { exist, noArguments, notFile, wrongPath } from './errMessages.js';
+import addError from './error.js';
 import { access } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
-import addError from './error.js';
-import { exist, noArguments, notDir, notFile, wrongPath } from './errMessages.js';
-import createPath from './createPath.js';
-import { pipeline } from 'stream/promises';
+import { createBrotliCompress } from 'zlib';
+import infoAboutCurDir from './textInfo.js';
 
-export default async function copyCommand(userArg) {
+export default async function compressCommand(userArg) {
   const userArgArray = userArg.split(' ');
 
   if (userArg.trim() === '' || userArgArray.length !== 2) {
@@ -25,12 +25,13 @@ export default async function copyCommand(userArg) {
     addError('input', notFile);
     return;
   }
-  const copyFilePath = join(dirPath, fileName);
+  const archName = fileName.slice(0, fileName.lastIndexOf('.')) + '.br';
+  const archPath = join(dirPath, archName);
 
   let fileExist;
 
   try {
-    await access(copyFilePath);
+    await access(archPath);
     fileExist = true;
   } catch (err) {
     fileExist = false;
@@ -48,16 +49,13 @@ export default async function copyCommand(userArg) {
     return;
   }
 
-  const originalFileStream = createReadStream(origFilePath, 'utf-8');
-  const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
   try {
-    await pipeline(originalFileStream, copyFileStream);
+    const readStream = createReadStream(origFilePath, 'utf-8');
+    const writeStream = createWriteStream(archPath);
+    const brotli = createBrotliCompress();
+    readStream.pipe(brotli).pipe(writeStream);
     infoAboutCurDir();
   } catch (err) {
-    if (err.code === 'ENOTDIR') {
-      addError('input', notDir);
-      return;
-    }
-    addError();
+    console.log('Error');
   }
 }
