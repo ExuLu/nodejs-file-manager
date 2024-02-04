@@ -1,4 +1,4 @@
-import { EOL, cpus, homedir } from 'os';
+import { EOL, cpus, homedir, userInfo } from 'os';
 import addError from './error.js';
 import { noArguments, wrongArgs } from './errMessages.js';
 
@@ -29,5 +29,8 @@ export default function osInfo(userArg) {
   }
   if (command === 'homedir') {
     console.log(`Your home directory: ${homedir()}`);
+  }
+  if (command === 'username') {
+    console.log(`Your system username: ${userInfo().username}`);
   }
 }
