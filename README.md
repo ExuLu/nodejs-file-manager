@@ -20,7 +20,7 @@ cd path_to_folder
 or
 
 ```
- /Users/some_user/Desktop/path_to_folder;
+cd /Users/some_user/Desktop/path_to_folder;
 ```
 
 **ls** - Print in console list of all files and folders in current directory;
@@ -34,7 +34,7 @@ cat file.txt
 or
 
 ```
-/Users/some_user/file.txt;
+cat /Users/some_user/file.txt;
 ```
 
 **add** - Create empty file in current working directory. You can't create file with the file name that already exists in that directory. You need to enter name file after command, e.g.
@@ -78,15 +78,15 @@ or
 ```
 mv /Users/some_user/file.txt /Users/some_user/folder_one/destination_folder
 
-**rm** - Delete file. You need to enter path to the file, e.g.
 ```
+**rm** - Delete file. You need to enter path to the file, e.g.
 
+```
 rm file.txt
 
 ```
 or
 ```
-
 rm /Users/some_user/file.txt
 
 ```
