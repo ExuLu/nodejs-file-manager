@@ -49,13 +49,9 @@ export default async function compressCommand(userArg) {
     return;
   }
 
-  try {
-    const readStream = createReadStream(origFilePath, 'utf-8');
-    const writeStream = createWriteStream(archPath);
-    const brotli = createBrotliCompress();
-    readStream.pipe(brotli).pipe(writeStream);
-    infoAboutCurDir();
-  } catch (err) {
-    console.log('Error');
-  }
+  const readStream = createReadStream(origFilePath, 'utf-8');
+  const writeStream = createWriteStream(archPath);
+  const brotli = createBrotliCompress();
+  readStream.pipe(brotli).pipe(writeStream);
+  infoAboutCurDir();
 }
