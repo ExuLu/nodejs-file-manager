@@ -1,4 +1,4 @@
-import { EOL, cpus, homedir, userInfo } from 'os';
+import { EOL, arch, cpus, homedir, userInfo } from 'os';
 import addError from './error.js';
 import { noArguments, wrongArgs } from './errMessages.js';
 
@@ -32,5 +32,8 @@ export default function osInfo(userArg) {
   }
   if (command === 'username') {
     console.log(`Your system username: ${userInfo().username}`);
+  }
+  if (command === 'architecture') {
+    console.log(`Node.js binary has compiled for ${arch()} CPU architecture`)
   }
 }
