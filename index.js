@@ -11,6 +11,8 @@ import copyCommand from './scripts/cp.js';
 import removeCommand from './scripts/rm.js';
 import moveCommand from './scripts/mv.js';
 import osInfo from './scripts/os.js';
+import addError from './scripts/error.js';
+import { noCommand } from './scripts/errMessages.js';
 
 const args = process.argv.slice(2);
 
@@ -28,49 +30,34 @@ stdin.on('data', async (data) => {
   const command = stringData.slice(0, 3).trim();
 
   if (stringData === '.exit') exitFromFileManager(username);
-
-  if (command === 'up') upCommand();
-
-  if (command === 'cd') {
+  else if (command === 'up') upCommand();
+  else if (command === 'cd') {
     const userArg = stringData.slice(3);
     await cdCommand(userArg);
-  }
-
-  if (command === 'ls') await lsCommand();
-
-  if (command === 'cat') {
+  } else if (command === 'ls') await lsCommand();
+  else if (command === 'cat') {
     const userArg = stringData.slice(4);
     catCommand(userArg);
-  }
-
-  if (command === 'add') {
+  } else if (command === 'add') {
     const userArg = stringData.slice(4);
     await addCommand(userArg);
-  }
-
-  if (command === 'rn') {
+  } else if (command === 'rn') {
     const userArg = stringData.slice(3);
     await renameCommand(userArg);
-  }
-
-  if (command === 'cp') {
+  } else if (command === 'cp') {
     const userArg = stringData.slice(3);
     await copyCommand(userArg);
-  }
-
-  if (command === 'rm') {
+  } else if (command === 'rm') {
     const userArg = stringData.slice(3);
     await removeCommand(userArg);
-  }
-
-  if (command === 'mv') {
+  } else if (command === 'mv') {
     const userArg = stringData.slice(3);
     await moveCommand(userArg);
-  }
-
-  if (command === 'os') {
+  } else if (command === 'os') {
     const userArg = stringData.slice(3);
     osInfo(userArg);
+  } else {
+    addError('input', noCommand);
   }
 });
 
