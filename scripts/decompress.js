@@ -19,7 +19,7 @@ export default async function decompressCommand(userArg) {
   const dirPath = createPath(userArgArray[1]);
   const archiveName = archivePath.slice(archivePath.lastIndexOf('/') + 1);
   if (
-    !archiveName.includes('.') ||
+    !archiveName.includes('.br') ||
     archiveName.indexOf('.') === archiveName.length - 1
   ) {
     addError('input', notFile);
@@ -50,13 +50,9 @@ export default async function decompressCommand(userArg) {
     return;
   }
 
-  try {
-    const readStream = createReadStream(archivePath);
-    const writeStream = createWriteStream(decompressFilePath, 'utf-8');
-    const brotli = createBrotliDecompress();
-    readStream.pipe(brotli).pipe(writeStream);
-    infoAboutCurDir();
-  } catch (err) {
-    console.log('Error');
-  }
+  const brotli = createBrotliDecompress();
+  const readStream = createReadStream(archivePath);
+  const writeStream = createWriteStream(decompressFilePath, 'utf-8');
+  readStream.pipe(brotli).pipe(writeStream);
+  infoAboutCurDir();
 }
