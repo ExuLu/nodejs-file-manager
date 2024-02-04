@@ -14,6 +14,7 @@ import osInfo from './scripts/os.js';
 import addError from './scripts/error.js';
 import { noCommand } from './scripts/errMessages.js';
 import hashCommand from './scripts/hash.js';
+import compressCommand from './scripts/compress.js';
 
 const args = process.argv.slice(2);
 
@@ -60,6 +61,9 @@ stdin.on('data', async (data) => {
   } else if (stringData.slice(0, 4) === 'hash') {
     const userArg = stringData.slice(5);
     hashCommand(userArg);
+  } else if (stringData.slice(0, 8) === 'compress') {
+    const userArg = stringData.slice(9);
+    compressCommand(userArg);
   } else {
     addError('input', noCommand);
   }
