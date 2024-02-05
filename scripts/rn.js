@@ -9,6 +9,7 @@ import {
 import createPath from './createPath.js';
 import { access, rename } from 'fs/promises';
 import infoAboutCurDir from './textInfo.js';
+import { join } from 'path';
 
 export default async function renameCommand(userArg) {
   const userArgArray = userArg.split(' ');
@@ -18,14 +19,17 @@ export default async function renameCommand(userArg) {
     return;
   }
 
-  const newFileName = userArgArray[0];
+  const newFileName = userArgArray[1];
   if (newFileName.includes('/') || newFileName.includes('\\')) {
     addError('input', wrongArgs);
     return;
   }
 
   const oldFilePath = createPath(userArgArray[0]);
-  const newFilePath = createPath(newFileName);
+  const newFilePath = join(
+    oldFilePath.slice(0, oldFilePath.lastIndexOf('/')),
+    newFileName
+  );
 
   if (
     !oldFilePath.includes('.') ||
@@ -56,6 +60,9 @@ export default async function renameCommand(userArg) {
     infoAboutCurDir();
   } catch (err) {
     if (err.code === 'ENOENT') addError('operation', wrongPath);
-    else addError();
+    else {
+      console.log(err);
+      addError();
+    }
   }
 }

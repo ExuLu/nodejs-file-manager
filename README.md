@@ -43,7 +43,7 @@ cat /Users/some_user/file.txt;
 add file.txt
 ```
 
-**rn** - Rename file. You can't use name that some file in that folder has. You need to enter space and path to the file and new file name, separated by space, e.g.
+**rn** - Rename file. You can't use name that some file in that folder has. Avoid / and \ in new name. You need to enter space and path to the file and new file name, separated by space, e.g.
 
 ```
 rn old_name.txt new_name.txt
