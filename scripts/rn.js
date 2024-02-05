@@ -61,7 +61,6 @@ export default async function renameCommand(userArg) {
   } catch (err) {
     if (err.code === 'ENOENT') addError('operation', wrongPath);
     else {
-      console.log(err);
       addError();
     }
   }

@@ -3,7 +3,13 @@ import infoAboutCurDir from './textInfo.js';
 import { access } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import addError from './error.js';
-import { exist, noArguments, notDir, notFile, wrongPath } from './errMessages.js';
+import {
+  exist,
+  noArguments,
+  notDir,
+  notFile,
+  wrongPath,
+} from './errMessages.js';
 import createPath from './createPath.js';
 import { pipeline } from 'stream/promises';
 
@@ -48,14 +54,18 @@ export default async function copyCommand(userArg) {
     return;
   }
 
-  const originalFileStream = createReadStream(origFilePath, 'utf-8');
-  const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
+  const originalFileStream = createReadStream(origFilePath);
+  const copyFileStream = createWriteStream(copyFilePath);
   try {
     await pipeline(originalFileStream, copyFileStream);
     infoAboutCurDir();
   } catch (err) {
     if (err.code === 'ENOTDIR') {
       addError('input', notDir);
+      return;
+    }
+    if (err.code === 'ENOENT') {
+      addError('operation', wrongPath);
       return;
     }
     addError();
