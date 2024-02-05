@@ -56,6 +56,17 @@ export default async function copyCommand(userArg) {
 
   const originalFileStream = createReadStream(origFilePath);
   const copyFileStream = createWriteStream(copyFilePath);
+
+  originalFileStream.on('error', (err) => {
+    addError();
+    return;
+  });
+
+  copyFileStream.on('error', (err) => {
+    addError();
+    return;
+  });
+
   try {
     await pipeline(originalFileStream, copyFileStream);
     infoAboutCurDir();
