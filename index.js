@@ -16,6 +16,7 @@ import { noCommand } from './scripts/errMessages.js';
 import hashCommand from './scripts/hash.js';
 import compressCommand from './scripts/compress.js';
 import decompressCommand from './scripts/decompress.js';
+import goToHomeDir from './scripts/homeDir.js';
 
 const args = process.argv.slice(2);
 
@@ -26,6 +27,7 @@ const username = args.reduce(
 );
 
 stdout.write(`Welcome to the File Manager, ${username} \n`);
+goToHomeDir();
 infoAboutCurDir();
 
 stdin.on('data', async (data) => {
