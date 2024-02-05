@@ -1,9 +1,15 @@
 import { join } from 'path';
 import infoAboutCurDir from './textInfo.js';
-import { access, rm } from 'fs/promises';
+import { access, rm, stat } from 'fs/promises';
 import { createReadStream, createWriteStream } from 'fs';
 import addError from './error.js';
-import { noArguments, exist, wrongPath, notDir } from './errMessages.js';
+import {
+  noArguments,
+  exist,
+  wrongPath,
+  notDir,
+  notFile,
+} from './errMessages.js';
 import createPath from './createPath.js';
 import { pipeline } from 'stream/promises';
 
@@ -35,14 +41,37 @@ export default async function moveCommand(userArg) {
   }
 
   try {
+    await access(dirPath);
+  } catch (err) {
+    addError('operation', wrongPath);
+    return;
+  }
+
+  try {
+    const stats = await stat(dirPath);
+    if (!stats.isDirectory) throw Error('not dir');
+  } catch (err) {
+    addError('input', notDir);
+    return;
+  }
+
+  try {
     await access(origFilePath);
   } catch (err) {
     addError('operation', wrongPath);
     return;
   }
 
-  const originalFileStream = createReadStream(origFilePath, 'utf-8');
-  const copyFileStream = createWriteStream(copyFilePath, 'utf-8');
+  try {
+    const stats = await stat(origFilePath);
+    if (!stats.isFile()) throw Error('not file');
+  } catch (err) {
+    addError('input', notFile);
+    return;
+  }
+
+  const originalFileStream = createReadStream(origFilePath);
+  const copyFileStream = createWriteStream(copyFilePath);
   try {
     await pipeline(originalFileStream, copyFileStream);
     infoAboutCurDir();
@@ -53,8 +82,10 @@ export default async function moveCommand(userArg) {
     } else if (err.code === 'ENOENT') {
       addError('operation', wrongPath);
       return;
+    } else if (err.code === 'EISDIR') {
+      addError('input', notFile);
+      return;
     } else {
-      console.log(err);
       addError();
       return;
     }
