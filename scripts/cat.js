@@ -12,7 +12,7 @@ export default function catCommand(userArg) {
     return;
   }
   const filePath = createPath(userArg);
-  const readStream = createReadStream(filePath, 'utf-8');
+  const readStream = createReadStream(filePath);
   let data = '';
   readStream.on('data', (chunk) => (data += chunk));
   readStream.on('end', () => {

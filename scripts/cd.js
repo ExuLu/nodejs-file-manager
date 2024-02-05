@@ -23,6 +23,6 @@ export default async function cdCommand(userArg) {
   } catch (err) {
     if (err.code === 'ENOENT') {
       addError('operation', wrongPath);
-    }
+    } else addError();
   }
 }
